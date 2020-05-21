@@ -2,7 +2,14 @@ import os
 import re
 from typing import Tuple, Callable
 
-from pysecretary.exceptions import InvalidPrefixError, UnsupportedPrefixError
+from pysecretary.exceptions import InvalidPrefixError, UnsupportedPrefixError, NotFoundError
+
+
+class NotFound:
+    pass
+NOT_FOUND = NotFound()
+
+
 
 
 class PrefixDispatchRegistry:
@@ -51,17 +58,22 @@ def _get_env(v: str) -> str:
     prefix, k = _parse(v)
     value = os.environ.get(k)
     if value is None:
-        raise KeyError(f'no environment variable found for key "{k}"')
+        raise NotFoundError(f'no environment variable found for key "{k}"')
     return value
 
 
-def get(env: str) -> str:
+def get(env: str, default=NOT_FOUND) -> str:
     prefix, value = _parse(env)
     f = _registry.get(prefix)
-    return f(env)
+    try:
+        return f(env)
+    except NotFoundError:
+        if default is NOT_FOUND:
+            raise
+        return default
 
 
-def register(prefix: str, f: Callable[[str], str], force=False):
+def register(prefix: str, f: Callable[[str, str], str], force=False):
     _registry.register(prefix, f, force)
 
 

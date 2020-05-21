@@ -2,6 +2,7 @@ import os
 import unittest
 
 from pysecretary import pysecretary, InvalidPrefixError, UnsupportedPrefixError
+from pysecretary.exceptions import NotFoundError
 
 
 class TestPysecretary(unittest.TestCase):
@@ -12,7 +13,7 @@ class TestPysecretary(unittest.TestCase):
 
     def test_env_raise(self):
         os.environ.clear()
-        with self.assertRaises(KeyError):
+        with self.assertRaises(NotFoundError):
             pysecretary.get("env://PYSECRETARY")
 
     def test_unsupported_prefix(self):
@@ -26,5 +27,7 @@ class TestPysecretary(unittest.TestCase):
         with self.assertRaises(InvalidPrefixError):
             pysecretary.get("v:/PYSECRETARY")
 
-        with self.assertRaises(InvalidPrefixError):
-            pysecretary.get("://PYSECRETARY")
+    def test_with_default(self):
+        t = pysecretary.get("env://PYSECRETARY", 'default')
+        self.assertEqual(t, 'default')
+

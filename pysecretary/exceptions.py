@@ -7,6 +7,10 @@ class UnsupportedPrefixError(PysecretaryError):
     A value contains a prefix that is not supported
     """
 
+class NotFoundError(PysecretaryError):
+    """
+    Could not find value
+    """
 
 class InvalidPrefixError(PysecretaryError):
     """
