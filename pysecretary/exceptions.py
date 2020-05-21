@@ -8,12 +8,6 @@ class UnsupportedPrefixError(PysecretaryError):
     """
 
 
-class Error(PysecretaryError):
-    """
-    A value does not have a valid prefix
-    """
-
-
 class InvalidPrefixError(PysecretaryError):
     """
     A value does not have a valid prefix

@@ -25,6 +25,6 @@ class TestPysecretary(unittest.TestCase):
 
         with self.assertRaises(InvalidPrefixError):
             pysecretary.get("v:/PYSECRETARY")
-           
+
         with self.assertRaises(InvalidPrefixError):
             pysecretary.get("://PYSECRETARY")
