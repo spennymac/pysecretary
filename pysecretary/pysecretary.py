@@ -2,7 +2,7 @@ import os
 import re
 from typing import Tuple, Callable
 
-from pysecretary.exceptions import InvalidPrefixError, UnsupportedPrefixError, NotFoundError
+from pysecretary.exceptions import InvalidPrefixError, UnsupportedPrefixError, NotFoundError, PysecretaryError
 
 
 class NotFound:
@@ -63,11 +63,11 @@ def _get_env(v: str) -> str:
 
 
 def get(env: str, default=NOT_FOUND) -> str:
-    prefix, value = _parse(env)
-    f = _registry.get(prefix)
     try:
+        prefix, value = _parse(env)
+        f = _registry.get(prefix)
         return f(env)
-    except NotFoundError:
+    except PysecretaryError:
         if default is NOT_FOUND:
             raise
         return default

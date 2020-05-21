@@ -31,3 +31,5 @@ class TestPysecretary(unittest.TestCase):
         t = pysecretary.get("env://PYSECRETARY", 'default')
         self.assertEqual(t, 'default')
 
+        t = pysecretary.get("PYSECRETARY", 'default')
+        self.assertEqual(t, 'default')
