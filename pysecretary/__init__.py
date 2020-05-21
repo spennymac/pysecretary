@@ -1,9 +1,7 @@
 """Top-level package for PySecretary."""
+from .exceptions import PysecretaryError, UnsupportedPrefixError, InvalidPrefixError
 from .pysecretary import (
     get,
-    UnsupportedPrefixError,
-    InvalidPrefixError,
-    PysecretaryError,
     register,
 )
 

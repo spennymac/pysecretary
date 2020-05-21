@@ -2,31 +2,11 @@ import os
 import re
 from typing import Tuple, Callable
 
-
-class PysecretaryError(Exception):
-    pass
-
-
-class UnsupportedPrefixError(PysecretaryError):
-    """
-    A value contains a prefix that is not supported
-    """
-
-
-class Error(PysecretaryError):
-    """
-    A value does not have a valid prefix
-    """
-
-
-class InvalidPrefixError(PysecretaryError):
-    """
-    A value does not have a valid prefix
-    """
+from pysecretary.exceptions import InvalidPrefixError, UnsupportedPrefixError
 
 
 class PrefixDispatchRegistry:
-    PREFIX_R = re.compile(r"(^(\w+):\/\/)")
+    PREFIX_PATTERN = re.compile(r"(^(\w+):\/\/)")
 
     def __init__(self):
         self._supported_prefixes = set()
@@ -54,7 +34,7 @@ class PrefixDispatchRegistry:
 
 
 def _parse(v: str) -> Tuple[str, str]:
-    vals = re.split(PrefixDispatchRegistry.PREFIX_R, v, maxsplit=1)
+    vals = re.split(PrefixDispatchRegistry.PREFIX_PATTERN, v, maxsplit=1)
     if len(vals) == 4:
         prefix = vals[2].casefold()
         value = vals[3]
