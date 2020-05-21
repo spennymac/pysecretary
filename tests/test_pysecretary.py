@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from pysecretary import pysecretary
+from pysecretary import pysecretary, InvalidPrefixError, UnsupportedPrefixError
 
 
 class TestPysecretary(unittest.TestCase):
@@ -14,3 +14,17 @@ class TestPysecretary(unittest.TestCase):
         os.environ.clear()
         with self.assertRaises(KeyError):
             pysecretary.get("env://PYSECRETARY")
+
+    def test_unsupported_prefix(self):
+        with self.assertRaises(UnsupportedPrefixError):
+            pysecretary.get("invalid://PYSECRETARY")
+
+    def test_invalid_prefix(self):
+        with self.assertRaises(InvalidPrefixError):
+            pysecretary.get("PYSECRETARY")
+
+        with self.assertRaises(InvalidPrefixError):
+            pysecretary.get("v:/PYSECRETARY")
+           
+        with self.assertRaises(InvalidPrefixError):
+            pysecretary.get("://PYSECRETARY")
