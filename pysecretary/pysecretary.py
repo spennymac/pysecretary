@@ -1,0 +1,89 @@
+import os
+import re
+from typing import Tuple, Callable
+
+
+class PysecretaryError(Exception):
+    pass
+
+
+class UnsupportedPrefixError(PysecretaryError):
+    """
+    A value contains a prefix that is not supported
+    """
+
+
+class Error(PysecretaryError):
+    """
+    A value does not have a valid prefix
+    """
+
+
+class InvalidPrefixError(PysecretaryError):
+    """
+    A value does not have a valid prefix
+    """
+
+
+class PrefixDispatchRegistry:
+    PREFIX_R = re.compile(r"(^(\w+):\/\/)")
+
+    def __init__(self):
+        self._supported_prefixes = set()
+        self._registry = dict()
+
+    def register(self, prefix: str, f: Callable[[str], str], force=False):
+        if not callable(f):
+            raise TypeError(f' "{type(f)}" is not callable')
+
+        if prefix in self._supported_prefixes and not force:
+            raise KeyError(
+                f'prefix "{prefix}" already exists, use force=True if you want to overwrite'
+            )
+
+        self._supported_prefixes.add(prefix)
+        self._registry[prefix] = f
+
+    def is_supported(self, prefix: str) -> bool:
+        if prefix not in self._supported_prefixes:
+            return False
+        return True
+
+    def get(self, prefix: str) -> Callable[[str], str]:
+        return self._registry.get(prefix)
+
+
+def _parse(v: str) -> Tuple[str, str]:
+    vals = re.split(PrefixDispatchRegistry.PREFIX_R, v, maxsplit=1)
+    if len(vals) == 4:
+        prefix = vals[2].casefold()
+        value = vals[3]
+
+        if not _registry.is_supported(prefix):
+            raise UnsupportedPrefixError(prefix)
+
+        return prefix, value
+
+    raise InvalidPrefixError(v)
+
+
+def _get_env(v: str) -> str:
+    prefix, k = _parse(v)
+    value = os.environ.get(k)
+    if value is None:
+        raise KeyError(f'no environment variable found for key "{k}"')
+    return value
+
+
+def get(env: str) -> str:
+    prefix, value = _parse(env)
+    f = _registry.get(prefix)
+    return f(env)
+
+
+def register(prefix: str, f: Callable[[str], str], force=False):
+    _registry.register(prefix, f, force)
+
+
+_registry = PrefixDispatchRegistry()
+_registry.register("env", _get_env)
