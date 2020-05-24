@@ -22,6 +22,9 @@ class TestPysecretary(unittest.TestCase):
 
     def test_invalid_prefix(self):
         with self.assertRaises(InvalidPrefixError):
+            pysecretary.register("", lambda x, y: x)
+
+        with self.assertRaises(InvalidPrefixError):
             pysecretary.get("PYSECRETARY")
 
         with self.assertRaises(InvalidPrefixError):
