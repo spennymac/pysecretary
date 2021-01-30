@@ -35,7 +35,7 @@ setup(
     keywords="pysecretary",
     name="pysecretary",
     packages=find_packages(include=["pysecretary", "pysecretary.*"]),
-    url="https://github.com/worlvlhole/pysecretary",
-    version="0.1.4",
+    url="https://github.com/spennymac/pysecretary",
+    version="0.1.5",
     zip_safe=False,
 )
