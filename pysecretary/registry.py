@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Dict, Set
 
 from .exceptions import InvalidPrefixError, UnsupportedPrefixError
 from .prefix import VALID_PREFIX
@@ -8,8 +8,8 @@ from .retriever import SecretRetriever
 class SecretRetrieverRegistry:
 
     def __init__(self):
-        self._supported_prefixes = set()
-        self._registry = dict()
+        self._supported_prefixes: Set[str] = set()
+        self._registry: Dict[str, SecretRetriever] = dict()
 
     def register(self, prefix: str, retriever: SecretRetriever, force=False):
         if not VALID_PREFIX.match(prefix):
@@ -32,7 +32,7 @@ class SecretRetrieverRegistry:
             return False
         return True
 
-    def get(self, prefix: str) -> Callable[[str], str]:
+    def get(self, prefix: str) -> SecretRetriever:
         if not self.is_supported(prefix):
             raise UnsupportedPrefixError()
         return self._registry.get(prefix)
