@@ -26,11 +26,19 @@ PySecretary is a python secrets library
 * Free software: MIT license
 * Documentation: https://pysecretary.readthedocs.io.
 
-
-Features
+Examples
 --------
+.. code-block:: python
 
-* TODO - vault integration
+    import os
+    from pysecretary import pysecretary
+
+    os.environ["PYSECRETARY"] = "test"
+    value = pysecretary.get("env://PYSECRETARY")
+    print(value)
+
+    value = pysecretary.get("env://PATH")
+    print(value)
 
 Credits
 -------
